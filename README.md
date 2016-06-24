@@ -1,6 +1,6 @@
 # SeleniumInterpreter
 
-Java enterpreter that spawns and controls a firefox broswer instance.  So far, no classes that require imports can be used except for WebDriver, WebElement and WebDriverWait.
+Java interpreter that spawns and controls a firefox broswer instance.  So far, no classes that require imports can be used except for WebDriver, WebElement and WebDriverWait.
 
 Reference the firefox window using the object reference 'driver'
 

@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+version = '1.0'
+mainClassName = "com.jcleary.Main"
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useTestNG()
+}
+dependencies {
+
+    compile files("${System.properties['java.home']}")
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
+
+    // https://mvnrepository.com/artifact/org.testng/testng
+    compile group: 'org.testng', name: 'testng', version: '6.9.10'
+
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.53.0'
+
+}

@@ -5,14 +5,17 @@ import org.openqa.selenium.WebDriver;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
+ * The gui window.  This gui consists of an input text area on top, an stdout text area below.  And a run button that
+ * triggers the java code in the top to be injected into a template, compiled and ran.
+ *
+ * Code inputted should be treated as if it was in a static method.
+ *
  * Created by julian on 6/23/2016.
  */
 public class Window {
@@ -28,23 +31,29 @@ public class Window {
         this.driver = driver;
     }
 
+    /**
+     * Init all the gui components and attach action listeners
+     */
     public void init() {
 
-        // Initialize components
+        /*/***********************
+         * Initialize components *
+         *************************/
         mainFrame = new JFrame("Selenium interpreter");
         mainFrame.setSize(600, 400);
         mainFrame.setLayout(new GridLayout(3, 1));
 
         input = new JTextArea();
-        input.setSize(600, 190);
-        output = new JTextArea();
-        input.setSize(600, 190);
 
+        output = new JTextArea();
+        output.setEditable(false);
+        output.setBackground(Color.LIGHT_GRAY);
 
         run = new JButton("Run");
-        //run.setSize(100, 20);
 
-        // Add listeners
+       /*/****************
+         * Add Listeners *
+         *****************/
         mainFrame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -53,48 +62,47 @@ public class Window {
             }
         });
 
-        run.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PrintStream ps = System.out;
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                System.setOut(new PrintStream(baos));
+        run.addActionListener(e -> {
+            PrintStream ps = System.out;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(baos));
 
-                String name = "SeleniumRunner";
+            String name = "SeleniumRunner";
 
-                String src =
-                        "import org.openqa.selenium.WebDriver;" +
-                        "public class " + name + " {" +
-                        "    public static void run(WebDriver driver) {" +
-                        //"        try {" +
-                                     getInput() +
-                        //"        } catch (Throwable e) {" +
-                        //"            System.out.println(e);" +
-                        //"        }" +
-                        "    }" +
-                        "}";
+            String src =
+                    "import org.openqa.selenium.*;" +
+                    "public class " + name + " {" +
+                    "    public static void run(WebDriver driver) {" +
+                    //"        try {" +
+                                 getInput() +
+                    //"        } catch (Throwable e) {" +
+                    //"            System.out.println(e);" +
+                    //"        }" +
+                    "    }" +
+                    "}";
 
-                        IMSCompiler imsCompiler = null;
-                try {
-                    imsCompiler = new IMSCompiler(name, src);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-
-                try {
-                    imsCompiler.execute(driver);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                byte[] b = baos.toByteArray();
-
-                String s = new String(b);
-
-                setOutput(s);
+                    IMSCompiler imsCompiler = null;
+            try {
+                imsCompiler = new IMSCompiler(name, src);
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
+
+            try {
+                imsCompiler.execute(driver);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            byte[] b = baos.toByteArray();
+
+            String s = new String(b);
+
+            setOutput(s);
         });
 
-        //Link components
+       /*/******************
+         * Link components *
+         *******************/
         mainFrame.add(input);
         mainFrame.add(output);
         mainFrame.add(run);
@@ -102,22 +110,45 @@ public class Window {
 
     }
 
+    /**
+     * Get the text currently in the output component.  This is used for testing purposes.
+     *
+     * @return
+     */
     public String getOutput() {
         return output.getText();
     }
 
+    /**
+     * Set the text in the output component.  This is where text should be put from stdout.
+     *
+     * @param text
+     */
     public void setOutput(String text) {
         output.setText(text);
     }
 
+    /**
+     * Get the text currently in the input component.
+     *
+     * @return
+     */
     public String getInput() {
         return input.getText();
     }
 
+    /**
+     * Set the text in the input component.  This is used for testing purposes.
+     *
+     * @param text
+     */
     public void setInput(String text) {
         input.setText(text);
     }
 
+    /**
+     * Simulate a click on the run button.
+     */
     public void runSnippet() {
         run.doClick();
     }

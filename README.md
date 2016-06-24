@@ -2,6 +2,8 @@
 
 Java interpreter that spawns and controls a firefox broswer instance.  So far, no classes that require imports can be used except for classes in org.openqa.selenium package.
 
+Build using gradle.  But I haven't gotten the run task to work.  I've been running Main directly inside intellij.
+
 Reference the firefox window using the object reference 'driver'
 
 The window consists of an input text area on top, a stdout area below, and a run button.

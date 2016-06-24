@@ -12,5 +12,7 @@ public class Main {
 
         WebDriver driver = new FirefoxDriver();
         Window window = new Window(driver);
+
+        window.init();
     }
 }
